@@ -158,6 +158,52 @@ function updateCartCount() {
   if (el) el.innerText = count;
 }
 
+// ================= CART DISPLAY =================
+const cartItems = document.getElementById("cart-items");
+
+if (cartItems) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  if (cart.length === 0) {
+    cartItems.innerHTML = "<h3>Your cart is empty 🛒</h3>";
+  } else {
+    let html = "";
+    let total = 0;
+
+    cart.forEach(item => {
+      let itemTotal = item.price * item.qty;
+      total += itemTotal;
+
+      html += `
+        <div class="product">
+          <img src="${item.image}">
+          <div style="flex:1;">
+            <h3>${item.name}</h3>
+            <p>₹${item.price} x ${item.qty}</p>
+
+            <button onclick="increaseQty(${item.id})">➕</button>
+            <button onclick="decreaseQty(${item.id})">➖</button>
+            <button onclick="removeItem(${item.id})">❌</button>
+          </div>
+        </div>
+      `;
+    });
+
+    let discount = total * 0.1;
+    let finalTotal = total - discount;
+
+    html += `
+      <div style="margin-top:20px; text-align:center;">
+        <h2>Subtotal: ₹${total}</h2>
+        <h2 style="color:green;">Discount: -₹${discount.toFixed(0)}</h2>
+        <h2 style="color:#ff9900;">Total: ₹${finalTotal.toFixed(0)}</h2>
+      </div>
+    `;
+
+    cartItems.innerHTML = html;
+  }
+}
+
 // ================= ORDER =================
 function placeOrder() {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
